@@ -83,7 +83,7 @@ const About = () => {
                 </div>
                 <div>
                   <h3 className="text-2xl font-bold text-white mb-2">M3thy1</h3>
-                  <p className="text-cyber-cyan font-mono text-sm mb-2">Евгений (Evgeniy)</p>
+                  <p className="text-cyber-cyan font-mono text-sm mb-2">@Moonshot.ai (Kimi)</p>
                   <div className="flex items-center gap-2 text-gray-400 text-sm">
                     <MapPin size={14} />
                     <span>Global • Remote Research</span>

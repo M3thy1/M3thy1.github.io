@@ -27,34 +27,48 @@ const Hero = () => {
   }, []);
 
   const codeLines = [
-    { text: 'class', color: '#ff79c6' },
-    { text: ' CybersecurityResearcher', color: '#8be9fd' },
-    { text: ':', color: '#f8f8f2' },
-    { text: '', color: '' },
-    { text: '    def', color: '#ff79c6' },
-    { text: ' __init__', color: '#50fa7b' },
-    { text: '(self):', color: '#f8f8f2' },
-    { text: '', color: '' },
-    { text: '        self.handle', color: '#f8f8f2' },
-    { text: ' = ', color: '#ff79c6' },
-    { text: '"M3thy1"', color: '#f1fa8c' },
-    { text: '', color: '' },
-    { text: '        self.focus', color: '#f8f8f2' },
-    { text: ' = [', color: '#f8f8f2' },
-    { text: '"binary_exploitation"', color: '#f1fa8c' },
-    { text: ',', color: '#f8f8f2' },
-    { text: '', color: '' },
-    { text: '                          ', color: '' },
-    { text: '"reverse_engineering"', color: '#f1fa8c' },
-    { text: ',', color: '#f8f8f2' },
-    { text: '', color: '' },
-    { text: '                          ', color: '' },
-    { text: '"vulnerability_research"', color: '#f1fa8c' },
-    { text: ']', color: '#f8f8f2' },
-    { text: '', color: '' },
-    { text: '        self.mission', color: '#f8f8f2' },
-    { text: ' = ', color: '#ff79c6' },
-    { text: '"Secure the digital frontier"', color: '#f1fa8c' },
+    [
+      { text: 'class ', color: '#ff79c6' },
+      { text: 'CybersecurityResearcher', color: '#8be9fd' },
+      { text: ':', color: '#f8f8f2' },
+    ],
+    [],
+    [
+      { text: '    def ', color: '#ff79c6' },
+      { text: '__init__', color: '#50fa7b' },
+      { text: '(self):', color: '#f8f8f2' },
+    ],
+    [],
+    [
+      { text: '        self.handle ', color: '#f8f8f2' },
+      { text: '= ', color: '#ff79c6' },
+      { text: '"M3thy1"', color: '#f1fa8c' },
+    ],
+    [],
+    [
+      { text: '        self.focus ', color: '#f8f8f2' },
+      { text: '= [', color: '#f8f8f2' },
+    ],
+    [
+      { text: '            "binary_exploitation"', color: '#f1fa8c' },
+      { text: ',', color: '#f8f8f2' },
+    ],
+    [
+      { text: '            "reverse_engineering"', color: '#f1fa8c' },
+      { text: ',', color: '#f8f8f2' },
+    ],
+    [
+      { text: '            "vulnerability_research"', color: '#f1fa8c' },
+    ],
+    [
+      { text: '        ]', color: '#f8f8f2' },
+    ],
+    [],
+    [
+      { text: '        self.mission ', color: '#f8f8f2' },
+      { text: '= ', color: '#ff79c6' },
+      { text: '"Secure the digital frontier"', color: '#f1fa8c' },
+    ],
   ];
 
   return (
@@ -243,7 +257,13 @@ const Hero = () => {
                   transition={{ delay: 0.8 + index * 0.03 }}
                   className="whitespace-pre"
                 >
-                  <span style={{ color: line.color }}>{line.text}</span>
+                  {Array.isArray(line) ? (
+                    line.map((token, tokenIndex) => (
+                      <span key={tokenIndex} style={{ color: token.color }}>{token.text}</span>
+                    ))
+                  ) : (
+                    <span style={{ color: line.color }}>{line.text}</span>
+                  )}
                 </motion.div>
               ))}
               <motion.span
