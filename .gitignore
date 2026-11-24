@@ -1,4 +1,15 @@
-# Logs
+# build output
+dist/
+dist-ssr
+
+# generated types
+.astro/
+
+# dependencies
+node_modules/
+node_modules.*/
+
+# logs
 logs
 *.log
 npm-debug.log*
@@ -7,21 +18,30 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
+# environment variables
+.env
+.env.production
 *.local
 
-# Editor directories and files
+.vercel
+
+# lockfiles: this project uses pnpm only
+package-lock.json
+bun.lockb
+yarn.lock
+
+# macOS-specific files
+.DS_Store
+
+# ide
+.idea
+*.iml
 .vscode/*
 !.vscode/extensions.json
-.idea
-.DS_Store
+
+# visual studio
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
-
-# Astro generated
-.astro
