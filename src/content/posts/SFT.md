@@ -3,7 +3,7 @@ title: SFT原理分析
 published: 2026-11-25
 description: '监督微调SFT，似乎就是给问题和答案，诱导模型模仿生成，然而真的有这么简单吗'
 image: ''
-tags: [LLM, SFT, Math, Algorithm]
+tags: [LLM, SFT, Math, Algorithm, Post Train]
 category: 'LLM Algorithm'
 draft: false 
 lang: ''
