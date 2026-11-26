@@ -41,7 +41,7 @@ $$
 $$
 p_\mathrm{data}(x,y)=\frac1N\sum_{i=1}^N\bold1[(x,y)=(x_i,y_i)].
 $$
-于是就有损失的期望形式：
+于是就有损失的期望形式，可以发现就是交叉熵损失：
 $$
 \mathcal{L}_\mathrm{SFT}=-\mathbb{E}_{(x,y)\sim p_\mathrm{data}}\Big[\sum_{t=1}^T \log p_\theta(y_t\mid x,y_{<t})\Big]
 $$
@@ -69,3 +69,21 @@ $$
 这说明了长序列的偏差是线性累积的。SFT后的模型越生成越飘、会说不会停就是因为模型只见过训练前缀，生成一个略偏的 token，就进入了训练分布的低密度区，每步 $\delta_t$ 会越来越大。
 
 ### 为什么还要RL
+
+如果模型足够强，学会了所有的样例，模型族包含 $p_{\text{data}}$，由 Gibbs 不等式 $D_{\mathrm{KL}}\ge0$：
+$$
+\arg\min_{p_\theta}D_{\mathrm{KL}}\big(p_{\text{data}}\Vert p_\theta\big)=p_{\text{data}}
+$$
+这就是MLE的最优解，如果有目标奖励：
+$$
+J(p)=\mathbb E_{y\sim p(\cdot\mid x)}\big[r(y,x)\big]
+$$
+则在MLE最优情况有：
+$$
+J(p_{\text{data}})=\mathbb E_{y\sim p_{\text{data}}}\big[r(y,x)\big]
+$$
+即示范数据的平均奖励。在概率单纯形上有最大值 $\max_y r(y,x)$（所有概率质量集中于顶点/one-hot时才能取到），非点质量的情况：
+$$
+J(p_{\text{data}})<\max_{y}r(y,x)
+$$
+SFT 和最大化奖励之间存在间隙（最优解不唯一，训练数据有错误示范），间隙取决于示范质量。SFT 的目标是拟合分布，而不是奖励最大化。
