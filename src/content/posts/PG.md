@@ -11,14 +11,13 @@ lang: ''
 
 ### 策略与策略梯度定理
 
-随机策略是给定状态下动作的条件分布 $\pi_\theta(a\mid s)$，在 LLM 生成 token 时，状态就是已生成的 token 序列，动作是下一个 token，此时语言模型就是策略。
 
-马尔可夫决策过程（MDP）是强化学习最常用的数学建模框架，用来描述“智能体在环境中不断观察状态、采取动作、获得奖励并转移到新状态”的决策问题
+
+强化学习要优化的对象通常写成一个马尔可夫决策过程（MDP），用来描述“智能体在环境中不断观察状态、采取动作、获得奖励并转移到新状态”的决策问题。
 
 MDP 是五元组 $(S,A,P,r,\gamma)$：状态集、动作集、状态转移概率 $P(s'\mid s,a)$、奖励 $r(s,a)$、折扣 $\gamma\in[0,1]$。
 
-一条长度 $T$ 的轨迹是：
-
+随机策略是给定状态下动作的条件分布 $\pi_\theta(a\mid s)$，描述在状态 $s$ 下，以多大比例选择动作 $a$。在 LLM 生成 token 时，状态就是已生成的 token 序列，动作是下一个 token，此时语言模型就是策略。一次交互会产生一条轨迹：
 $$
 \tau=(s_0,a_0,s_1,a_1,\dots,s_{T-1},a_{T-1})
 $$
@@ -28,23 +27,29 @@ $$
 $$
 p_\theta(\tau)=\rho(s_0)\prod_{t=0}^{T-1}\pi_\theta(a_t\mid s_t)\,P(s_{t+1}\mid s_t,a_t)
 $$
+这里只有策略 $\pi_\theta(a\mid s)$ 和参数 $\theta$ 有关，$\rho(s_0)$ 和 $P$ 都属于环境的一部分。
+
 对于每条轨迹，有回报 $R(\tau)=\sum_t\gamma^tr(s_t,a_t)$​ ，RL 的目标通常是最大化期望折扣回报：
 $$
 J(\theta)=\mathbb E_{\tau\sim p_\theta}\Big[\sum_{t=0}^{T-1}\gamma^{t}r(s_t,a_t)\Big]
 $$
-则有 $J(\theta)=\int R(\tau)p_\theta(\mathrm{d}\tau)$，梯度为：
+为了能够梯度上升，我们要对目标函数求导。
+
+根据期望的积分形式有 $J(\theta)=\int R(\tau)p_\theta(\mathrm{d}\tau)$，梯度为：
 $$
 \nabla_\theta J(\theta)=\int \nabla_\theta p_\theta(\tau)R(\tau)\mathrm{d}\tau
 $$
+在这里，求导遇到了一些问题：
+
+- 我们能采样轨迹，却拿不到 $\nabla_\theta p_\theta(\tau)$，展开后会有关于策略、环境的项。
+- $p_\theta(\tau)$ 是 $T$ 重乘积，轨迹空间大小是 $\lvert S\rvert^T\lvert A\rvert^T$，无法遍历所有轨迹，因此也难以积分。
+- 每步动作 $(s_t,a_t)$ 没有标准答案 $a_t^\star$，不然就直接 MLE 了。
+
 而根据对数求导法有 $\nabla_\theta p_\theta(\tau)=p_\theta(\tau)\cdot\nabla_\theta \log p_\theta(\tau)$ 展开有：
 $$
 \nabla_\theta p_\theta(\tau)=p_\theta(\tau)\cdot\nabla_\theta\Big[\log\rho(s_0)+\sum_t\log\pi_\theta(a_t\mid s_t)+\sum_t\log P(s_{t+1}\mid s_t,a_t)\Big]
 $$
-可以发现最后一项包含 $\nabla_\theta P$，该项和训练环境有关，是不可微的。对数梯度里虽然环境项被消去，但左边的环境因子还在。
 
-$p_\theta(\tau)$ 是 $T$ 重乘积，轨迹空间大小是 $\lvert S\rvert^T\lvert A\rvert^T$，无法遍历所有轨迹，因此也难以积分。
-
-每步动作 $(s_t,a_t)$ 没有标准答案 $a_t^\star$，不然就直接 MLE 了。
 
 消掉无关项后：
 $$
